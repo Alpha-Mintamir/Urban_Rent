@@ -86,14 +86,13 @@ app.use("/", require("./routes/staticRoutes"));
 // Error handling middleware
 app.use(errorHandler);
 
-// Only start the server if not in a serverless environment or test environment
-if (process.env.NODE_ENV !== 'production' && process.env.NODE_ENV !== 'test') {
-  app.listen(process.env.PORT || 4000, (err) => {
-    if (err) {
-      console.log("Error in connecting to server: ", err);
-    }
-    console.log(`Server is running on port no. ${process.env.PORT || 4000}`);
-  });
-}
+// Start the server
+const PORT = process.env.PORT || 4000;
+app.listen(PORT, (err) => {
+  if (err) {
+    console.log("Error in connecting to server: ", err);
+  }
+  console.log(`Server is running on port no. ${PORT}`);
+});
 
 module.exports = app;
