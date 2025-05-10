@@ -4,7 +4,7 @@ import { toast } from 'react-toastify';
 import { useLanguage } from '@/providers/LanguageProvider';
 
 // Hardcoded API URL
-const API_URL = 'http://localhost:4000';
+const API_URL = 'https://urban-rent.onrender.com';
 
 const PropertyReviews = ({ propertyId, propertyStatus }) => {
   const { user } = useAuth();
