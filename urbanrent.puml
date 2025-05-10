@@ -1,0 +1,22 @@
+@startuml
+skinparam componentStyle rectangle
+
+package "Home Rental Platform" {
+
+  [User Management] as UM
+  [Messaging System] as MS
+  [Property Management] as PM
+  [Location Service] as LS
+  [Review System] as RS
+  [Admin Dashboard] as AD
+
+  ' Relationships between components
+  UM --> MS : interacts
+  UM --> PM : accesses
+  UM --> RS : reviews
+  PM --> LS : uses
+  RS --> AD : reports
+  AD --> UM : manages users
+  AD --> PM : monitors listings
+}
+@enduml
