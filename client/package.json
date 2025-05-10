@@ -8,6 +8,9 @@
     "build": "vite build",
     "preview": "vite preview"
   },
+  "engines": {
+    "node": "18.x"
+  },
   "dependencies": {
     "@babel/core": "^7.26.0",
     "@headlessui/react": "^2.2.2",
