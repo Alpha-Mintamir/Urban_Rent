@@ -882,8 +882,8 @@ export const translations = {
 };
 
 export const LanguageProvider = ({ children }) => {
-  // Default language is Amharic
-  const [language, setLanguage] = useState('am');
+  // Default language is English
+  const [language, setLanguage] = useState('en');
 
   // Load language preference from localStorage on mount
   useEffect(() => {

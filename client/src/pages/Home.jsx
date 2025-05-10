@@ -1,15 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { FaSearch } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import propertyImage from "@/assets/property-2.jpg";
 import { useAuth } from "../../hooks";
-import { Search } from 'lucide-react';
 
 const Home = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const [searchTerm, setSearchTerm] = useState("");
 
   // Redirect logged-in users to their respective dashboards
   useEffect(() => {
@@ -42,19 +39,6 @@ const Home = () => {
     return null; // Return nothing while redirecting
   }
 
-  const handleSearchChange = (e) => {
-    setSearchTerm(e.target.value);
-  };
-
-  const handleSearchSubmit = (e) => {
-    e.preventDefault(); // Prevent form submission if it were a form
-    if (searchTerm.trim()) {
-      navigate(`/browse?search=${encodeURIComponent(searchTerm.trim())}`);
-    } else {
-      navigate('/browse'); // Navigate to browse page even if search is empty
-    }
-  };
-
   return (
     <div className="bg-gray-50 min-h-screen text-gray-800">
       {/* Hero Section */}
@@ -69,27 +53,6 @@ const Home = () => {
           <p className="text-lg sm:text-xl md:text-2xl mt-6 max-w-xl mx-auto text-gray-200">
             Discover top listings, explore by neighborhood, and rent your dream space with UrbanRent.
           </p>
-
-          {/* Search Form */}
-          <form 
-            onSubmit={handleSearchSubmit} 
-            className="mt-10 w-full max-w-xl mx-auto bg-white rounded-lg shadow-2xl flex items-center transition-all duration-300 focus-within:ring-2 focus-within:ring-pink-500"
-          >
-            <input
-              type="text"
-              value={searchTerm}
-              onChange={handleSearchChange}
-              placeholder="Search by location, address, or property type..."
-              className="flex-grow px-5 py-4 text-gray-700 focus:outline-none rounded-l-lg text-base md:text-lg"
-            />
-            <button 
-              type="submit"
-              className="bg-pink-500 text-white px-5 py-4 md:px-7 flex items-center justify-center rounded-r-lg hover:bg-pink-600 transition-colors focus:outline-none focus:ring-2 focus:ring-pink-500 focus:ring-offset-2"
-            >
-              <Search size={20} className="mr-0 md:mr-2" /> 
-              <span className="hidden md:inline">Search</span>
-            </button>
-          </form>
 
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 mt-12 justify-center">
