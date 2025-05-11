@@ -113,10 +113,35 @@ const PropertyReviews = ({ propertyId, propertyStatus }) => {
       if (!response.ok) {
         const errorData = await response.text();
         console.error('Error response:', errorData);
+        
         try {
           const jsonError = JSON.parse(errorData);
+          
+          // Check for duplicate review error message
+          if (jsonError.message && 
+              (jsonError.message.includes('already reviewed') || 
+               jsonError.message.includes('already submitted') ||
+               jsonError.message.includes('duplicate'))) {
+            
+            // Display friendly message for duplicate reviews
+            toast.info(language === 'am' 
+              ? 'እርስዎ ከዚህ በፊት ለዚህ ንብረት ግምገማ አስገብተዋል' 
+              : 'You have already submitted a review for this property');
+            return;  
+          }
+          
           throw new Error(jsonError.message || 'Failed to submit review');
         } catch (e) {
+          if (errorData.includes('already reviewed') || 
+              errorData.includes('already submitted') || 
+              errorData.includes('duplicate')) {
+            
+            toast.info(language === 'am' 
+              ? 'እርስዎ ከዚህ በፊት ለዚህ ንብረት ግምገማ አስገብተዋል' 
+              : 'You have already submitted a review for this property');
+            return;
+          }
+          
           throw new Error('Failed to submit review');
         }
       }

@@ -211,22 +211,36 @@ const PropertyFormWithLocation = () => {
           const response = await axiosInstance.get('/broker/verification/status');
           const { status: verificationStatus } = response.data;
 
+          // Only redirect if explicitly not approved
           if (verificationStatus !== 'approved') {
             toast.info('Your broker account is not yet verified. Please complete your verification to add properties.');
             navigate('/broker/verification', { replace: true });
             return;
           }
+          
+          // If we get here, verification is successful
+          console.log('Broker verification successful:', verificationStatus);
+          
         } catch (error) {
           console.error("Error fetching broker verification status:", error);
-          // For any error (including 404), redirect to verification page
-          // This ensures brokers must be verified before uploading properties
-          const message = error.response?.status === 404 
-            ? 'Please complete your broker verification before adding properties.' 
-            : 'Verification status could not be confirmed. Please complete your verification.';
           
-          toast.info(message);
-          navigate('/broker/verification', { replace: true });
-          return;
+          // Only redirect for verification-specific errors
+          // Check if it's a 404 (no verification) or specific verification error
+          if (error.response?.status === 404 || 
+              (error.response?.data && error.response.data.message && 
+               error.response.data.message.toLowerCase().includes('verification'))) {
+            
+            const message = error.response?.status === 404 
+              ? 'Please complete your broker verification before adding properties.' 
+              : 'Verification status could not be confirmed. Please complete your verification.';
+            
+            toast.info(message);
+            navigate('/broker/verification', { replace: true });
+            return;
+          } else {
+            // For other errors (network, server), just show an error toast but don't redirect
+            toast.error('There was an error checking your verification status, but you can continue.');
+          }
         } finally {
           setVerifyingBroker(false);
         }
@@ -558,7 +572,11 @@ const PropertyFormWithLocation = () => {
   const preInput = (header, description) => {
     return (
       <>
-        <h2 className="mt-8 text-2xl font-bold text-gray-800 border-b pb-2 border-gray-200">{header}</h2>
+        <h2 className="mt-8 text-2xl font-bold text-gray-800 border-b pb-2 border-gray-200">
+          {typeof header === 'string' && header.includes(' ') ? 
+            header.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ') : 
+            header.charAt(0).toUpperCase() + header.slice(1)}
+        </h2>
         <p className="text-sm text-gray-600 mt-2 mb-4">{description}</p>
       </>
     );
@@ -634,7 +652,7 @@ const PropertyFormWithLocation = () => {
           
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
             <div className="col-span-1 md:col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-2">{t('subCity') || 'Sub City'}:</label>
+              <label className="block text-lg font-bold text-gray-800 mb-2">{t('subCity') ? t('subCity').charAt(0).toUpperCase() + t('subCity').slice(1) : 'Sub City'}:</label>
               <div className="relative">
                 <select
                   name="kifleKetema"
@@ -643,7 +661,7 @@ const PropertyFormWithLocation = () => {
                   className="w-full rounded-lg border border-gray-300 p-3 pl-4 pr-10 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-[#D746B7] focus:border-transparent transition-all text-gray-800 appearance-none"
                   disabled={loading}
                 >
-                  <option value="">{t('selectSubCity') || '-- Select Sub City --'}</option>
+                  <option value="">{t('selectSubCity') || '-- Select Sub City (e.g., Bole, Yeka) --'}</option>
                   {subCities.map((city) => (
                     <option key={city} value={city}>
                       {city}
@@ -659,7 +677,7 @@ const PropertyFormWithLocation = () => {
             </div>
             
             <div className="space-y-2">
-              <label className="block text-sm font-medium text-gray-700 mb-2">{t('woreda') || 'Woreda'}:</label>
+              <label className="block text-lg font-bold text-gray-800 mb-2">{t('woreda') ? t('woreda').charAt(0).toUpperCase() + t('woreda').slice(1) : 'Woreda'}:</label>
               <div className="relative">
                 <select
                   name="wereda"
@@ -668,7 +686,7 @@ const PropertyFormWithLocation = () => {
                   className="w-full rounded-lg border border-gray-300 p-3 pl-4 pr-10 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-[#D746B7] focus:border-transparent transition-all text-gray-800 appearance-none"
                   disabled={!locationData.kifleKetema || loading}
                 >
-                  <option value="">{t('selectWoreda') || '-- Select Woreda --'}</option>
+                  <option value="">{t('selectWoreda') || '-- Select Woreda (e.g., Woreda 5) --'}</option>
                   {woredas.map((woreda) => (
                     <option key={woreda} value={woreda}>
                       {woreda}
@@ -687,7 +705,7 @@ const PropertyFormWithLocation = () => {
             </div>
             
             <div className="space-y-2">
-              <label className="block text-sm font-medium text-gray-700 mb-2">{t('kebele') || 'Kebele'}:</label>
+              <label className="block text-lg font-bold text-gray-800 mb-2">{t('kebele') ? t('kebele').charAt(0).toUpperCase() + t('kebele').slice(1) : 'Kebele'}:</label>
               <div className="relative">
                 <select
                   name="kebele"
@@ -696,7 +714,7 @@ const PropertyFormWithLocation = () => {
                   className="w-full rounded-lg border border-gray-300 p-3 pl-4 pr-10 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-[#D746B7] focus:border-transparent transition-all text-gray-800 appearance-none"
                   disabled={!locationData.wereda || loading}
                 >
-                  <option value="">{t('selectKebele') || '-- Select Kebele --'}</option>
+                  <option value="">{t('selectKebele') || '-- Select Kebele (e.g., Kebele 12) --'}</option>
                   {kebeles.map((kebele) => (
                     <option key={kebele} value={kebele}>
                       {kebele}
@@ -715,40 +733,29 @@ const PropertyFormWithLocation = () => {
             </div>
             
             <div className="space-y-2">
-              <label className="block text-sm font-medium text-gray-700 mb-2">{t('houseNumber') || 'House Number'}:</label>
+              <label className="block text-lg font-bold text-gray-800 mb-2">{t('houseNumber') ? t('houseNumber').charAt(0).toUpperCase() + t('houseNumber').slice(1) : 'House Number'}:</label>
               <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="#9ca3af" className="w-5 h-5">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75" />
-                  </svg>
-                </div>
                 <input
                   type="text"
                   name="houseNumber"
                   value={locationData.houseNumber}
                   onChange={handleLocationChange}
-                  placeholder={t('enterHouseNumber') || 'e.g., 123'}
-                  className="w-full rounded-lg border border-gray-300 p-3 pl-10 shadow-sm focus:outline-none focus:ring-2 focus:ring-[#D746B7] focus:border-transparent transition-all"
+                  placeholder={t('enterHouseNumber') || 'e.g., 123 or Block A/5'}
+                  className="w-full rounded-lg border border-gray-300 p-3 shadow-sm focus:outline-none focus:ring-2 focus:ring-[#D746B7] focus:border-transparent transition-all"
                 />
               </div>
             </div>
             
             <div className="space-y-2">
-              <label className="block text-sm font-medium text-gray-700 mb-2">{t('areaName') || 'Area Name'}:</label>
+              <label className="block text-lg font-bold text-gray-800 mb-2">{t('areaName') ? t('areaName').charAt(0).toUpperCase() + t('areaName').slice(1) : 'Area Name'}:</label>
               <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="#9ca3af" className="w-5 h-5">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
-                  </svg>
-                </div>
                 <input
                   type="text"
                   name="areaName"
                   value={locationData.areaName}
                   onChange={handleLocationChange}
-                  placeholder={t('enterAreaName') || 'e.g., Near Central Market'}
-                  className="w-full rounded-lg border border-gray-300 p-3 pl-10 shadow-sm focus:outline-none focus:ring-2 focus:ring-[#D746B7] focus:border-transparent transition-all"
+                  placeholder={t('enterAreaName') || 'e.g., Near Bole Medhanialem Church, Gerji'}
+                  className="w-full rounded-lg border border-gray-300 p-3 shadow-sm focus:outline-none focus:ring-2 focus:ring-[#D746B7] focus:border-transparent transition-all"
                 />
               </div>
             </div>
@@ -799,19 +806,19 @@ const PropertyFormWithLocation = () => {
           </div>
           
           <div>
-            {preInput(t('title') || 'Title', t('titleForYourPlace') || 'Title for your place. Should be short and catchy as in advertisement.')}
+            {preInput(t('title') || 'Title', t('titleForYourPlace') || 'Title for your place. Should be short, descriptive and attractive to potential tenants.')}
             <input
               type="text"
               value={property_name}
               name="property_name"
               onChange={handleFormData}
-              placeholder={t('titlePlaceholder') || 'e.g., My lovely apartment'}
+              placeholder={t('titlePlaceholder') || 'e.g., Modern 2BR Apartment with Balcony in Bole'}
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#D746B7] focus:border-[#D746B7] shadow-sm transition-all duration-200"
             />
           </div>
 
           <div>
-            {preInput(t('propertyType') || 'Property Type', t('selectPropertyType') || 'Select the type of your property.')}
+            {preInput(t('propertyType') || 'Property Type', t('selectPropertyType') || 'Select the category that best describes your property.')}
             <select
               name="property_type"
               value={property_type}
@@ -819,7 +826,7 @@ const PropertyFormWithLocation = () => {
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#D746B7] focus:border-[#D746B7] shadow-sm transition-all duration-200 bg-white"
             >
               <option value="" disabled>
-                {language === 'am' ? 'የንብረት አይነት ይምረጡ' : 'Select Property Type'}
+                {language === 'am' ? 'የንብረት አይነት ይምረጡ' : 'Select Property Type (e.g., Apartment, Villa)'}
               </option>
               {propertyTypeGroups.map(group => (
                 <optgroup key={language === 'am' ? group.groupLabel_am : group.groupLabel_en} label={language === 'am' ? group.groupLabel_am : group.groupLabel_en}>
@@ -834,13 +841,13 @@ const PropertyFormWithLocation = () => {
           </div>
 
           <div>
-            {preInput(t('description') || 'Description', t('descriptionOfPlace') || 'Description of the place.')}
+            {preInput(t('description') || 'Description', t('descriptionOfPlace') || 'Provide a detailed description of your property including its features, condition, and surroundings.')}
             <textarea
               value={description}
               name="description"
               onChange={handleFormData}
               className="w-full h-32 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#D746B7] focus:border-[#D746B7] shadow-sm transition-all duration-200"
-              placeholder={t('descriptionPlaceholder') || 'Provide a detailed description of your property...'}
+              placeholder={t('descriptionPlaceholder') || 'e.g., This newly renovated apartment features 2 spacious bedrooms, a modern kitchen with appliances, 24/7 security, and is located in a quiet neighborhood with easy access to public transportation.'}
             />
           </div>
 
@@ -853,20 +860,21 @@ const PropertyFormWithLocation = () => {
           </div>
 
           <div>
-            {preInput(t('extraInfo') || 'Extra Info', t('houseRulesEtc') || 'House rules, etc.')}
+            {preInput(t('extraInfo') || 'Extra Info', t('houseRulesEtc') || 'Additional information for tenants such as house rules, check-in procedures, and other important notes.')}
             <textarea 
               value={extra_info} 
               name="extra_info"
               onChange={handleFormData} 
               className="w-full h-24 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#D746B7] focus:border-[#D746B7] shadow-sm transition-all duration-200"
+              placeholder="e.g., No smoking inside the property. Pets allowed with prior approval. Quiet hours after 10 PM. Monthly maintenance fee of 500 ETB for common areas."
             />
           </div>
 
           <div>
-            {preInput(t('occupancyPrice') || 'Occupancy & Price', t('addNumberOfOccupantsAndPrice') || 'Add number of occupants and price per night.')}
+            {preInput(t('occupancyPrice') || 'Occupancy & Price', t('addNumberOfOccupantsAndPrice') || 'Specify the property details including number of rooms and monthly rental price.')}
             <div className="grid sm:grid-cols-2 gap-6 mt-4">
               <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100">
-                <label htmlFor="bedrooms" className="block text-sm font-medium text-gray-700 mb-1">{t('bedrooms') || 'Bedrooms'}</label>
+                <label htmlFor="bedrooms" className="block text-lg font-bold text-gray-800 mb-2">{t('bedrooms') ? t('bedrooms').charAt(0).toUpperCase() + t('bedrooms').slice(1) : 'Bedrooms'}</label>
                 <input 
                   type="number" 
                   id="bedrooms" 
@@ -874,11 +882,12 @@ const PropertyFormWithLocation = () => {
                   value={bedrooms} 
                   onChange={handleFormData} 
                   min="1"
+                  placeholder="e.g., 2"
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#D746B7] focus:border-[#D746B7] transition-all duration-200"
                 />
               </div>
               <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100">
-                <label htmlFor="bathrooms" className="block text-sm font-medium text-gray-700 mb-1">{t('bathrooms') || 'Bathrooms'}</label>
+                <label htmlFor="bathrooms" className="block text-lg font-bold text-gray-800 mb-2">{t('bathrooms') ? t('bathrooms').charAt(0).toUpperCase() + t('bathrooms').slice(1) : 'Bathrooms'}</label>
                 <input 
                   type="number" 
                   id="bathrooms" 
@@ -886,11 +895,12 @@ const PropertyFormWithLocation = () => {
                   value={bathrooms} 
                   onChange={handleFormData} 
                   min="1"
+                  placeholder="e.g., 1"
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#D746B7] focus:border-[#D746B7] transition-all duration-200"
                 />
               </div>
               <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100">
-                <label htmlFor="max_occupants" className="block text-sm font-medium text-gray-700 mb-1">{t('maxOccupants') || 'Max. number of occupants'}</label>
+                <label htmlFor="max_occupants" className="block text-lg font-bold text-gray-800 mb-2">{t('maxOccupants') ? t('maxOccupants').charAt(0).toUpperCase() + t('maxOccupants').slice(1) : 'Max Occupants'}</label>
                 <input 
                   type="number" 
                   id="max_occupants" 
@@ -898,17 +908,19 @@ const PropertyFormWithLocation = () => {
                   value={max_occupants} 
                   onChange={handleFormData} 
                   min="1"
+                  placeholder="e.g., 4"
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#D746B7] focus:border-[#D746B7] transition-all duration-200"
                 />
               </div>
               <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100">
-                <label htmlFor="price" className="block text-sm font-medium text-gray-700 mb-1">{t('pricePerNight') || 'Price per night (ETB)'}</label>
+                <label htmlFor="price" className="block text-lg font-bold text-gray-800 mb-2">{t('pricePerNight') ? t('pricePerNight').charAt(0).toUpperCase() + t('pricePerNight').slice(1) : 'Monthly Rent (ETB)'}</label>
                 <input 
                   type="number" 
                   id="price" 
                   name="price" 
                   value={price} 
-                  onChange={handleFormData} 
+                  onChange={handleFormData}
+                  placeholder="e.g., 15000"
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#D746B7] focus:border-[#D746B7] transition-all duration-200"
                 />
               </div>
