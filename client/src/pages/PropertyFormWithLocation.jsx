@@ -211,8 +211,8 @@ const PropertyFormWithLocation = () => {
           const response = await axiosInstance.get('/broker/verification/status');
           const { status: verificationStatus } = response.data;
 
-          // Only redirect if explicitly not approved
-          if (verificationStatus !== 'approved') {
+          // Check if the broker is verified/approved
+          if (verificationStatus !== 'approved' && verificationStatus !== 'verified') {
             toast.info('Your broker account is not yet verified. Please complete your verification to add properties.');
             navigate('/broker/verification', { replace: true });
             return;
