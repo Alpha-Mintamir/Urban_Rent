@@ -145,5 +145,10 @@ button.social {
 /* For Firefox */
 .custom-scrollbar {
   scrollbar-width: thin;
-  @apply scrollbar-color-gray-400/50 dark:scrollbar-color-gray-500/50;
+  scrollbar-color: rgba(156, 163, 175, 0.5) transparent; /* Use actual color values instead of Tailwind classes */
+}
+
+/* Dark mode scrollbar for Firefox */
+.dark .custom-scrollbar {
+  scrollbar-color: rgba(107, 114, 128, 0.5) transparent; /* Darker color for dark mode */
 }
