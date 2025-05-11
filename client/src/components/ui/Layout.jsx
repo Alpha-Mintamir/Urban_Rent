@@ -30,12 +30,12 @@ const Layout = () => {
   }, [user, location.pathname, navigate]);
   
   return (
-    <>
+    <div className="flex flex-col min-h-screen bg-background text-foreground">
       <Header />
-      <div className="mx-auto flex min-h-screen max-w-screen-xl flex-col pt-20">
+      <div className="mx-auto flex flex-grow w-full max-w-screen-xl flex-col pt-20">
         <Outlet />
       </div>
-    </>
+    </div>
   );
 };
 

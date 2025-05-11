@@ -190,11 +190,11 @@ const RegisterPage = () => {
           <div className="mt-2 text-sm text-gray-600 dark:text-gray-400">
             <p className="mb-1 font-medium">Password must meet the following criteria:</p>
             <ul className="list-inside list-disc space-y-1">
-              <li className={passwordCriteria.length ? 'text-green-600 dark:text-green-400' : 'text-red-500'}>At least 8 characters</li>
-              <li className={passwordCriteria.uppercase ? 'text-green-600 dark:text-green-400' : 'text-red-500'}>At least one uppercase letter</li>
-              <li className={passwordCriteria.lowercase ? 'text-green-600 dark:text-green-400' : 'text-red-500'}>At least one lowercase letter</li>
-              <li className={passwordCriteria.number ? 'text-green-600 dark:text-green-400' : 'text-red-500'}>At least one number</li>
-              <li className={passwordCriteria.specialChar ? 'text-green-600 dark:text-green-400' : 'text-red-500'}>At least one special character</li>
+              <li className={passwordCriteria.length ? 'text-indigo-600 dark:text-indigo-400' : 'text-red-500'}>At least 8 characters</li>
+              <li className={passwordCriteria.uppercase ? 'text-indigo-600 dark:text-indigo-400' : 'text-red-500'}>At least one uppercase letter</li>
+              <li className={passwordCriteria.lowercase ? 'text-indigo-600 dark:text-indigo-400' : 'text-red-500'}>At least one lowercase letter</li>
+              <li className={passwordCriteria.number ? 'text-indigo-600 dark:text-indigo-400' : 'text-red-500'}>At least one number</li>
+              <li className={passwordCriteria.specialChar ? 'text-indigo-600 dark:text-indigo-400' : 'text-red-500'}>At least one special character</li>
             </ul>
           </div>
           <Button
