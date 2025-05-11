@@ -558,8 +558,8 @@ const PropertyFormWithLocation = () => {
   const preInput = (header, description) => {
     return (
       <>
-        <h2 className="mt-4 text-2xl">{header}</h2>
-        <p className="text-sm text-gray-500">{description}</p>
+        <h2 className="mt-8 text-2xl font-bold text-gray-800 border-b pb-2 border-gray-200">{header}</h2>
+        <p className="text-sm text-gray-600 mt-2 mb-4">{description}</p>
       </>
     );
   };
@@ -613,92 +613,163 @@ const PropertyFormWithLocation = () => {
       
       {/* Step 1: Location Information */}
       {currentStep === 1 && (
-        <div className="mx-auto max-w-4xl">
-          <h2 className="mb-4 text-xl font-semibold">{t('locationVerification')}</h2>
+        <div className="mx-auto max-w-4xl bg-white rounded-xl shadow-md p-6 border border-gray-100">
+          <h2 className="mb-6 text-2xl font-bold text-center text-gray-800 border-b pb-4 border-gray-200">
+            {t('locationVerification') || 'Property Location'}
+          </h2>
           
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+          <div className="mb-8">
+            <div className="flex items-center justify-center mb-4">
+              <div className="w-12 h-12 rounded-full bg-purple-100 flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="#D746B7" className="w-6 h-6">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
+                </svg>
+              </div>
+            </div>
+            <p className="text-center text-gray-600 max-w-lg mx-auto">
+              {t('locationImportantMessage') || 'Accurate location details help tenants find your property easily. All fields are required for successful property listing.'}
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
             <div className="col-span-1 md:col-span-2">
-              <label className="mb-2 block">{t('subCity')}:</label>
-              <select
-                name="kifleKetema"
-                value={locationData.kifleKetema}
-                onChange={handleLocationChange}
-                className="w-full rounded-md border border-gray-300 p-2"
-                disabled={loading}
-              >
-                <option value="">{t('selectSubCity')}</option>
-                {subCities.map((city) => (
-                  <option key={city} value={city}>
-                    {city}
-                  </option>
-                ))}
-              </select>
+              <label className="block text-sm font-medium text-gray-700 mb-2">{t('subCity') || 'Sub City'}:</label>
+              <div className="relative">
+                <select
+                  name="kifleKetema"
+                  value={locationData.kifleKetema}
+                  onChange={handleLocationChange}
+                  className="w-full rounded-lg border border-gray-300 p-3 pl-4 pr-10 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-[#D746B7] focus:border-transparent transition-all text-gray-800 appearance-none"
+                  disabled={loading}
+                >
+                  <option value="">{t('selectSubCity') || '-- Select Sub City --'}</option>
+                  {subCities.map((city) => (
+                    <option key={city} value={city}>
+                      {city}
+                    </option>
+                  ))}
+                </select>
+                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-700">
+                  <svg className="w-4 h-4 fill-current" viewBox="0 0 20 20">
+                    <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" fillRule="evenodd"></path>
+                  </svg>
+                </div>
+              </div>
             </div>
-            <div>
-              <label className="mb-2 block">{t('woreda')}:</label>
-              <select
-                name="wereda"
-                value={locationData.wereda}
-                onChange={handleLocationChange}
-                className="w-full rounded-md border border-gray-300 p-2"
-                disabled={!locationData.kifleKetema || loading}
-              >
-                <option value="">{t('selectWoreda')}</option>
-                {woredas.map((woreda) => (
-                  <option key={woreda} value={woreda}>
-                    {woreda}
-                  </option>
-                ))}
-              </select>
+            
+            <div className="space-y-2">
+              <label className="block text-sm font-medium text-gray-700 mb-2">{t('woreda') || 'Woreda'}:</label>
+              <div className="relative">
+                <select
+                  name="wereda"
+                  value={locationData.wereda}
+                  onChange={handleLocationChange}
+                  className="w-full rounded-lg border border-gray-300 p-3 pl-4 pr-10 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-[#D746B7] focus:border-transparent transition-all text-gray-800 appearance-none"
+                  disabled={!locationData.kifleKetema || loading}
+                >
+                  <option value="">{t('selectWoreda') || '-- Select Woreda --'}</option>
+                  {woredas.map((woreda) => (
+                    <option key={woreda} value={woreda}>
+                      {woreda}
+                    </option>
+                  ))}
+                </select>
+                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-700">
+                  <svg className="w-4 h-4 fill-current" viewBox="0 0 20 20">
+                    <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" fillRule="evenodd"></path>
+                  </svg>
+                </div>
+              </div>
+              {!locationData.kifleKetema && 
+                <p className="text-xs text-gray-500 italic">Please select a Sub City first</p>
+              }
             </div>
-            <div>
-              <label className="mb-2 block">{t('kebele')}:</label>
-              <select
-                name="kebele"
-                value={locationData.kebele}
-                onChange={handleLocationChange}
-                className="w-full rounded-md border border-gray-300 p-2"
-                disabled={!locationData.wereda || loading}
-              >
-                <option value="">{t('selectKebele')}</option>
-                {kebeles.map((kebele) => (
-                  <option key={kebele} value={kebele}>
-                    {kebele}
-                  </option>
-                ))}
-              </select>
+            
+            <div className="space-y-2">
+              <label className="block text-sm font-medium text-gray-700 mb-2">{t('kebele') || 'Kebele'}:</label>
+              <div className="relative">
+                <select
+                  name="kebele"
+                  value={locationData.kebele}
+                  onChange={handleLocationChange}
+                  className="w-full rounded-lg border border-gray-300 p-3 pl-4 pr-10 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-[#D746B7] focus:border-transparent transition-all text-gray-800 appearance-none"
+                  disabled={!locationData.wereda || loading}
+                >
+                  <option value="">{t('selectKebele') || '-- Select Kebele --'}</option>
+                  {kebeles.map((kebele) => (
+                    <option key={kebele} value={kebele}>
+                      {kebele}
+                    </option>
+                  ))}
+                </select>
+                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-700">
+                  <svg className="w-4 h-4 fill-current" viewBox="0 0 20 20">
+                    <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" fillRule="evenodd"></path>
+                  </svg>
+                </div>
+              </div>
+              {!locationData.wereda && 
+                <p className="text-xs text-gray-500 italic">Please select a Woreda first</p>
+              }
             </div>
-            <div>
-              <label className="mb-2 block">{t('houseNumber')}:</label>
-              <input
-                type="text"
-                name="houseNumber"
-                value={locationData.houseNumber}
-                onChange={handleLocationChange}
-                placeholder={t('enterHouseNumber')}
-                className="w-full rounded-md border border-gray-300 p-2"
-              />
+            
+            <div className="space-y-2">
+              <label className="block text-sm font-medium text-gray-700 mb-2">{t('houseNumber') || 'House Number'}:</label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="#9ca3af" className="w-5 h-5">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75" />
+                  </svg>
+                </div>
+                <input
+                  type="text"
+                  name="houseNumber"
+                  value={locationData.houseNumber}
+                  onChange={handleLocationChange}
+                  placeholder={t('enterHouseNumber') || 'e.g., 123'}
+                  className="w-full rounded-lg border border-gray-300 p-3 pl-10 shadow-sm focus:outline-none focus:ring-2 focus:ring-[#D746B7] focus:border-transparent transition-all"
+                />
+              </div>
             </div>
-            <div>
-              <label className="mb-2 block">{t('areaName')}:</label>
-              <input
-                type="text"
-                name="areaName"
-                value={locationData.areaName}
-                onChange={handleLocationChange}
-                placeholder={t('enterAreaName')}
-                className="w-full rounded-md border border-gray-300 p-2"
-              />
+            
+            <div className="space-y-2">
+              <label className="block text-sm font-medium text-gray-700 mb-2">{t('areaName') || 'Area Name'}:</label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="#9ca3af" className="w-5 h-5">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
+                  </svg>
+                </div>
+                <input
+                  type="text"
+                  name="areaName"
+                  value={locationData.areaName}
+                  onChange={handleLocationChange}
+                  placeholder={t('enterAreaName') || 'e.g., Near Central Market'}
+                  className="w-full rounded-lg border border-gray-300 p-3 pl-10 shadow-sm focus:outline-none focus:ring-2 focus:ring-[#D746B7] focus:border-transparent transition-all"
+                />
+              </div>
             </div>
           </div>
           
-          <div className="mt-8 flex justify-center">
+          <div className="mt-10 flex justify-center">
             <button
               onClick={handleNextStep}
               disabled={loading}
-              className="rounded-full bg-[#D746B7] px-6 py-3 text-white disabled:bg-gray-400"
+              className="px-8 py-3 rounded-full bg-gradient-to-r from-[#D746B7] to-purple-600 text-white font-medium shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-150 flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
             >
-              {loading ? 'እየተላከ ነው...' : 'ቀጥል'}
+              {loading ? (
+                <Spinner size="sm" />
+              ) : (
+                <>
+                  <span>{t('continue') || 'Continue'}</span>
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                  </svg>
+                </>
+              )}
             </button>
           </div>
         </div>
@@ -735,7 +806,7 @@ const PropertyFormWithLocation = () => {
               name="property_name"
               onChange={handleFormData}
               placeholder={t('titlePlaceholder') || 'e.g., My lovely apartment'}
-              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#D746B7] focus:border-[#D746B7] shadow-sm transition-all duration-200"
             />
           </div>
 
@@ -745,7 +816,7 @@ const PropertyFormWithLocation = () => {
               name="property_type"
               value={property_type}
               onChange={handleFormData}
-              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#D746B7] focus:border-[#D746B7] shadow-sm transition-all duration-200 bg-white"
             >
               <option value="" disabled>
                 {language === 'am' ? 'የንብረት አይነት ይምረጡ' : 'Select Property Type'}
@@ -768,7 +839,7 @@ const PropertyFormWithLocation = () => {
               value={description}
               name="description"
               onChange={handleFormData}
-              className="w-full h-32 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+              className="w-full h-32 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#D746B7] focus:border-[#D746B7] shadow-sm transition-all duration-200"
               placeholder={t('descriptionPlaceholder') || 'Provide a detailed description of your property...'}
             />
           </div>
@@ -778,9 +849,7 @@ const PropertyFormWithLocation = () => {
 
           <div>
             {preInput(t('perks') || 'Perks', t('selectPerks') || 'Select all the perks of your place.')}
-            <div className="grid mt-2 gap-2 grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-              <Perks selected={perks} onChange={(newPerks) => setFormData(prev => ({ ...prev, perks: newPerks }))} />
-            </div>
+            <Perks selected={perks} onChange={(newPerks) => setFormData(prev => ({ ...prev, perks: newPerks }))} />
           </div>
 
           <div>
@@ -789,15 +858,15 @@ const PropertyFormWithLocation = () => {
               value={extra_info} 
               name="extra_info"
               onChange={handleFormData} 
-              className="w-full h-24 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+              className="w-full h-24 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#D746B7] focus:border-[#D746B7] shadow-sm transition-all duration-200"
             />
           </div>
 
           <div>
             {preInput(t('occupancyPrice') || 'Occupancy & Price', t('addNumberOfOccupantsAndPrice') || 'Add number of occupants and price per night.')}
-            <div className="grid sm:grid-cols-2 gap-4 mt-2">
-              <div>
-                <label htmlFor="bedrooms" className="block text-sm font-medium text-gray-700">{t('bedrooms') || 'Bedrooms'}</label>
+            <div className="grid sm:grid-cols-2 gap-6 mt-4">
+              <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100">
+                <label htmlFor="bedrooms" className="block text-sm font-medium text-gray-700 mb-1">{t('bedrooms') || 'Bedrooms'}</label>
                 <input 
                   type="number" 
                   id="bedrooms" 
@@ -805,11 +874,11 @@ const PropertyFormWithLocation = () => {
                   value={bedrooms} 
                   onChange={handleFormData} 
                   min="1"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 mt-1"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#D746B7] focus:border-[#D746B7] transition-all duration-200"
                 />
               </div>
-              <div>
-                <label htmlFor="bathrooms" className="block text-sm font-medium text-gray-700">{t('bathrooms') || 'Bathrooms'}</label>
+              <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100">
+                <label htmlFor="bathrooms" className="block text-sm font-medium text-gray-700 mb-1">{t('bathrooms') || 'Bathrooms'}</label>
                 <input 
                   type="number" 
                   id="bathrooms" 
@@ -817,11 +886,11 @@ const PropertyFormWithLocation = () => {
                   value={bathrooms} 
                   onChange={handleFormData} 
                   min="1"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 mt-1"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#D746B7] focus:border-[#D746B7] transition-all duration-200"
                 />
               </div>
-              <div>
-                <label htmlFor="max_occupants" className="block text-sm font-medium text-gray-700">{t('maxOccupants') || 'Max. number of occupants'}</label>
+              <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100">
+                <label htmlFor="max_occupants" className="block text-sm font-medium text-gray-700 mb-1">{t('maxOccupants') || 'Max. number of occupants'}</label>
                 <input 
                   type="number" 
                   id="max_occupants" 
@@ -829,35 +898,35 @@ const PropertyFormWithLocation = () => {
                   value={max_occupants} 
                   onChange={handleFormData} 
                   min="1"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 mt-1"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#D746B7] focus:border-[#D746B7] transition-all duration-200"
                 />
               </div>
-              <div>
-                <label htmlFor="price" className="block text-sm font-medium text-gray-700">{t('pricePerNight') || 'Price per night (ETB)'}</label>
+              <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100">
+                <label htmlFor="price" className="block text-sm font-medium text-gray-700 mb-1">{t('pricePerNight') || 'Price per night (ETB)'}</label>
                 <input 
                   type="number" 
                   id="price" 
                   name="price" 
                   value={price} 
                   onChange={handleFormData} 
-                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 mt-1"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#D746B7] focus:border-[#D746B7] transition-all duration-200"
                 />
               </div>
             </div>
           </div>
           
-          <div className="flex justify-between mt-8">
+          <div className="flex justify-between mt-10 mb-6">
             <button 
               type="button" 
               onClick={handleBack} 
-              className="px-6 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              className="px-8 py-3 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#D746B7] shadow-sm transition-colors"
             >
               {t('back') || 'Back'}
             </button>
             <button 
               type="submit" 
               disabled={loading}
-              className="px-6 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50 flex items-center"
+              className="px-8 py-3 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-[#D746B7] hover:bg-pink-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#D746B7] disabled:opacity-50 flex items-center transition-colors"
             >
               {loading && <Spinner size="sm" className="mr-2" />}
               {id ? (t('updateProperty') || 'Update Property') : (t('addProperty') || 'Add Property')}
