@@ -2,22 +2,45 @@
 module.exports = {
   testEnvironment: 'node',
   verbose: true,
+  collectCoverage: true,
+  coverageDirectory: 'coverage',
+  setupFilesAfterEnv: ['<rootDir>/tests/setup.js'],
+  testMatch: [
+    '**/tests/**/*.test.js'
+  ],
+  collectCoverageFrom: [
+    'models/**/*.js',
+    'controllers/**/*.js',
+    'utils/**/*.js',
+    '!**/node_modules/**',
+    '!**/config/**',
+    '!**/coverage/**'
+  ],
+  coverageThreshold: {
+    global: {
+      statements: 60,
+      branches: 60,
+      functions: 60,
+      lines: 60,
+    },
+  },
   // Automatically clear mock calls, instances, contexts and results before every test
   clearMocks: true,
-  // The directory where Jest should output its coverage files
-  coverageDirectory: 'coverage',
-  // An array of glob patterns indicating a set of files for which coverage information should be collected
-  collectCoverageFrom: [
-    '**/*.js',
-    '!index.js', // Exclude main server entry point from direct coverage (tested via endpoints)
-    '!jest.config.js',
-    '!**/node_modules/**',
-    '!**/vendor/**',
-    '!**/coverage/**',
-    '!**/tests/**', // Exclude test files
-    '!config/db.js', // Exclude DB config for now, can be tested separately if needed
-    // Add other files/directories to exclude if necessary
+  // Disable verbose console logging during tests
+  silent: false,
+  // Use a cleaner reporter with better symbols
+  reporters: [
+    'default',
+    ['jest-summary-reporter', { includeFailureMsg: true }]
   ],
+  // Only show console output for failed tests
+  verbose: false,
+  // Turn off noisy stack traces
+  errorOnDeprecated: false, 
+  bail: 0,
+  // Custom color configuration
+  // Colors are enabled by default in interactive terminals
+  forceExit: true,
   // A path to a module which exports an async function that is triggered once before all test suites
   // globalSetup: './tests/setup.js',
   // A path to a module which exports an async function that is triggered once after all test suites
