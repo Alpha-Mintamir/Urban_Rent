@@ -86,13 +86,15 @@ app.use("/", require("./routes/staticRoutes"));
 // Error handling middleware
 app.use(errorHandler);
 
-// Start the server
-const PORT = process.env.PORT || 4000;
-app.listen(PORT, (err) => {
+// Only start the server if not in test mode
+if (process.env.NODE_ENV !== 'test') {
+  const PORT = process.env.PORT || 4000;
+  app.listen(PORT, (err) => {
     if (err) {
       console.log("Error in connecting to server: ", err);
     }
-  console.log(`Server is running on port no. ${PORT}`);
+    console.log(`Server is running on port no. ${PORT}`);
   });
+}
 
 module.exports = app;

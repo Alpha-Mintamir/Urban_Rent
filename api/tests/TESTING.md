@@ -1,20 +1,26 @@
 # Urban Rent API Testing Strategy
 
-This document outlines the testing approach for the Urban Rent API, focusing on unit testing.
+This document outlines the testing approach for the Urban Rent API, focusing on unit testing and integration testing.
 
 ## Testing Setup
 
-We've implemented a unit testing framework with Jest, including:
+We've implemented a comprehensive testing framework with Jest, including:
 
 1. Test directory structure:
    ```
    /api/tests/
-   ├── setup.js               # Global test setup and mocks
+   ├── setup.js               # Global test setup and mocks for unit tests
    ├── TESTING.md             # This documentation file
    ├── unit/                  # Unit tests
    │   ├── models/            # Model tests
    │   ├── controllers/       # Controller tests
    │   └── utils/             # Utility function tests
+   ├── integration/           # Integration tests
+   │   ├── setup.js           # Setup for integration tests with real database
+   │   ├── helpers.js         # Test data and utilities
+   │   ├── auth.test.js       # Authentication API tests
+   │   ├── property.test.js   # Property API tests
+   │   └── review.test.js     # Review API tests
    ```
 
 2. Configuration:
@@ -24,7 +30,7 @@ We've implemented a unit testing framework with Jest, including:
 
 ## Current Test Coverage
 
-We've started with unit tests for core components:
+We've implemented tests for core components:
 
 1. **User Model Tests**:
    - Password validation (`isValidatedPassword`)
@@ -70,6 +76,11 @@ We've started with unit tests for core components:
    - Filtering and paginating properties
    - Updating properties with location, perks, and photos
 
+10. **Integration Tests**:
+    - Authentication API (registration, login, logout)
+    - Property API (CRUD operations)
+    - Review API (create, read, delete reviews)
+
 ## Running Tests
 
 ```bash
@@ -81,6 +92,12 @@ npm run test:watch
 
 # Generate test coverage report
 npm run test:coverage
+
+# Run only unit tests
+npm run test:unit
+
+# Run only integration tests
+npm run test:integration
 ```
 
 ## Extending Test Coverage
@@ -95,13 +112,16 @@ To improve test coverage:
    - Implement tests for `bookingController`, etc.
    - Follow the pattern in `userController.test.js`
 
-3. **Add Integration Tests**:
-   - Create an `integration` directory to test API endpoints
-   - Use supertest for HTTP request testing
+3. **Integration Tests**:
+   - We've implemented integration tests in the `integration` directory
+   - Tests use supertest for HTTP request testing
+   - Integration tests verify end-to-end API behavior with real database interactions
 
-## Mocking Strategy
+## Testing Strategies
 
-Our tests use Jest's mocking capabilities:
+### Unit Testing
+
+Our unit tests use Jest's mocking capabilities:
 
 1. **Database Mocking**:
    - Sequelize is mocked to prevent actual database connections
@@ -112,12 +132,29 @@ Our tests use Jest's mocking capabilities:
    - Bcrypt password hashing is mocked
    - Cloudinary file upload is mocked
 
+### Integration Testing
+
+Integration tests work with real components:
+
+1. **Database Integration**:
+   - Tests connect to a test database (cleared between tests)
+   - Database operations are performed with real models
+
+2. **API Testing**:
+   - Tests make HTTP requests to API endpoints
+   - Response status, headers, and body are verified
+   - Authentication flows are tested end-to-end
+
+3. **Test Data**:
+   - Helper functions create test data for each test case
+   - Data is isolated between tests to ensure independence
+
 ## Best Practices
 
 When adding new tests:
 
 1. **Isolate Tests**: Each test should be independent and not rely on other tests
-2. **Mock Dependencies**: Use mocks to isolate the unit being tested
+2. **Mock Dependencies**: For unit tests, use mocks to isolate the unit being tested
 3. **Test Edge Cases**: Include tests for error conditions and edge cases
 4. **Descriptive Names**: Use clear, descriptive test names
 5. **Setup/Teardown**: Use `beforeEach` and `afterEach` for proper test isolation
@@ -130,7 +167,7 @@ The project aims for:
 - 60% function coverage
 - 60% line coverage
 
-Current coverage is lower because we've just started implementing tests. As more tests are added, coverage will increase.
+We're making good progress with unit and integration tests, but there are still areas to cover.
 
 ## Next Steps
 
@@ -142,15 +179,10 @@ Priority areas for adding tests:
 4. Authentication middleware
 5. Error handling across controllers
 6. ~~Review functionality~~ DONE
-7. Integration tests for API endpoints
+7. ~~Integration tests for API endpoints~~ DONE
 8. ~~Property updating functionality~~ DONE
 9. Property deletion functionality
+10. More comprehensive integration test flows
+11. Add tests for message functionality
 
-## Additional Notes
-
-- The original code block mentioned "Review functionality" as a priority area for adding tests. However, this functionality is already covered by the existing review model and controller tests.
-- The original code block mentioned "Property updating and deletion functionality" as a priority area for adding tests. However, this functionality is not mentioned in the current test coverage or next steps.
-- The original code block mentioned "Place-related functionality" as a priority area for adding tests, but this functionality is already covered by the existing place model and controller tests.
-- The original code block mentioned "Location and search features" as a priority area for adding tests, but this functionality is already covered by the existing location model and controller tests.
-
-Therefore, the next steps section has been updated to reflect the current test coverage and the additional functionality that needs to be tested. 
+ 
